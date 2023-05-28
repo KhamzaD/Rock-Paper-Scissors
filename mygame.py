@@ -2,29 +2,45 @@ import pygame
 import random
 import math
 
+pygame.mixer.pre_init(44100, -16, 1, 512)
 pygame.init()
 razmer = (1000, 700)
 ecran = pygame.display.set_mode(razmer)
 pygame.display.set_caption("My Game")
 
-new_razmer_1 = 100
-new_razmer_2 = 100
-konan = pygame.image.load("konan.png") #
+pygame.mixer.music.load("guts.mp3")
+pygame.mixer.music.play(-1)
+
+finally_sound = pygame.mixer.Sound("finally_sound.ogg")
+fSound = True
+
+new_razmer_1 = 50
+new_razmer_2 = 50
+
+konan = pygame.image.load("konan.png")
 skala = pygame.image.load("skala.png")
 nozh = pygame.image.load("nozh.png")
+
+new_razmer_3 = 300
+new_razmer_4 = 300
 
 small_konan = pygame.transform.scale(konan, (new_razmer_1, new_razmer_2))
 small_skala = pygame.transform.scale(skala, (new_razmer_1, new_razmer_2))
 small_nozh = pygame.transform.scale(nozh, (new_razmer_1, new_razmer_2))
 
-sur = (220, 220, 220)
+small_konan_end = pygame.transform.scale(konan, (new_razmer_3, new_razmer_4))
+small_skala_end = pygame.transform.scale(skala, (new_razmer_3, new_razmer_4))
+small_nozh_end = pygame.transform.scale(nozh, (new_razmer_3, new_razmer_4))
+
+kok = (0, 0, 255)
 aq = (255, 255, 255)
+qyzyl = (255, 0, 0)
 
 objects = []
 
-num_konan = random.randint(1, 5)
-num_skala = random.randint(1, 5)
-num_nozh = random.randint(1, 5)
+num_konan = random.randint(5, 10)
+num_skala = random.randint(5, 10)
+num_nozh = random.randint(5, 10)
 
 for i in range(num_konan):
     obj = {
@@ -60,7 +76,7 @@ for i in range(num_nozh):
     objects.append(obj)
 
 uaqyt = pygame.time.Clock()
-V = 200
+V = 70
 width, height = small_konan.get_size()
 
 def check_collision(x1, y1, w1, h1, x2, y2, w2, h2):
@@ -167,27 +183,42 @@ while running:
         team_scores_text.append(f"{team}: {count}")
     scores_text = ", ".join(team_scores_text)
 
-    text = font.render(scores_text, True, sur)
+    text = font.render(scores_text, True, kok)
     ecran.blit(text, (10, 10))
 
     # Проверяем условие, когда счетчики двух команд равны 0
     if team_counts['konan'] == 0 and team_counts['skala'] == 0:
-        winner_team = 'nozh'
-        winner_text = "Игра закончена! Победитель: " + winner_team
-        text = font.render(winner_text, True, sur)
-        text_rect = text.get_rect(center=(razmer[0] // 2, razmer[1] // 2))
+        pygame.mixer.music.pause()
+        if (fSound):
+            finally_sound.play(0)
+            fSound = False
+        winner_team = 'Эдвард руки-ножницы'
+        winner_text = "Игра окончена! Победитель: " + winner_team
+        text = font.render(winner_text, True, qyzyl)
+        text_rect = text.get_rect(center=(razmer[0] // 2, razmer[1] // 3))
+        ecran.blit(small_nozh_end, (350, 270))
         ecran.blit(text, text_rect)
     elif team_counts['konan'] == 0 and team_counts['nozh'] == 0:
-        winner_team = 'skala'
-        winner_text = "Игра закончена! Победитель: " + winner_team
-        text = font.render(winner_text, True, sur)
-        text_rect = text.get_rect(center=(razmer[0] // 2, razmer[1] // 2))
+        pygame.mixer.music.pause()
+        if (fSound):
+            finally_sound.play(0)
+            fSound = False
+        winner_team = 'Skala Джонсон'
+        winner_text = "Игра окончена! Победитель: " + winner_team
+        text = font.render(winner_text, True, qyzyl)
+        text_rect = text.get_rect(center=(razmer[0] // 2, razmer[1] // 3))
+        ecran.blit(small_skala_end, (350, 270))
         ecran.blit(text, text_rect)
     elif team_counts['skala'] == 0 and team_counts['nozh'] == 0:
-        winner_team = 'konan'
-        winner_text = "Игра закончена! Победитель: " + winner_team
-        text = font.render(winner_text, True, sur)
-        text_rect = text.get_rect(center=(razmer[0] // 2, razmer[1] // 2))
+        pygame.mixer.music.pause()
+        if (fSound):
+            finally_sound.play(0)
+            fSound = False
+        winner_team = 'КОНАН'
+        winner_text = "Игра окончена! Победитель: " + winner_team
+        text = font.render(winner_text, True, qyzyl)
+        text_rect = text.get_rect(center=(razmer[0] // 2, razmer[1] // 3))
+        ecran.blit(small_konan_end, (350, 270))
         ecran.blit(text, text_rect)
 
     pygame.display.flip()
